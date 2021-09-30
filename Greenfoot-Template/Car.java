@@ -24,11 +24,16 @@ public class Car extends Actor
         this.TURN_SPEED = tSpeed;
     }
     
+    public boolean checkIntersects(CarAI obj)
+    {
+        return intersects(obj);
+    }
+    
     public void setDirection()
     {
-        if (Greenfoot.isKeyDown("right") || Greenfoot.isKeyDown("d"))
+        if ((Greenfoot.isKeyDown("right") || Greenfoot.isKeyDown("d")) && !(Greenfoot.isKeyDown("left") || Greenfoot.isKeyDown("a")))
             direction = 1;
-        else if (Greenfoot.isKeyDown("left") || Greenfoot.isKeyDown("a"))
+        else if ((Greenfoot.isKeyDown("left") || Greenfoot.isKeyDown("a")) && !(Greenfoot.isKeyDown("right") || Greenfoot.isKeyDown("d")))
             direction = -1;
         else
             direction = 0;

@@ -9,7 +9,7 @@ import java.util.*;
  */
 public class Scene extends World
 {
-    static public final int WIDTH = 600, HEIGHT = 800;
+    static public final int WIDTH = 700, HEIGHT = 900;
     private int gamestate = 1; // 1: Intro screen, 2: Game screen, 3: End screen
     public final MouseInfo mi = Greenfoot.getMouseInfo();
     private static boolean worldCreated = false;
@@ -23,7 +23,7 @@ public class Scene extends World
     public Scene()
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
-            super(WIDTH, HEIGHT, 1);
+            super(WIDTH, HEIGHT, 1, false);
         
             introScreen = new Intro(this);
             gameScreen = new Game(this);
@@ -55,7 +55,6 @@ public class Scene extends World
     }
     
     public void act() {
-        System.out.println(gamestate);
         switch (gamestate)
         {
             case 1: // Intro screen
@@ -92,12 +91,12 @@ class Intro
     }
     
     public void setScene() {
+        this.scene.getBackground().setColor(new Color(200, 200, 200));
+        this.scene.getBackground().fill();
+        
         startBtn = new StartBtn(this.scene.mi);
     
         this.scene.addObject(startBtn, this.scene.WIDTH / 2, this.scene.HEIGHT - 200);
-        
-        this.scene.getBackground().setColor(new Color(100, 100, 100));
-        this.scene.getBackground().fill();
     }
     
     public void act() {
@@ -110,10 +109,18 @@ class Game
 {
     private Scene scene;
     private boolean readyForNextScene = false; 
+    private final int PLAYER_START_X, PLAYER_START_Y;
+    private ArrayList<Background> backgrounds = new ArrayList<Background>();
+    private Car player;
+    private int gameSpeed = 1;
+    private long interval = System.currentTimeMillis();
     
     Game(Scene scene)
     {
         this.scene = scene;
+        
+        PLAYER_START_X = this.scene.WIDTH / 2;
+        PLAYER_START_Y = this.scene.HEIGHT - 200;
     }
     
     public boolean getReadyForNextScene()
@@ -122,11 +129,33 @@ class Game
     }
     
     public void setScene() {
-        this.scene.getBackground().setColor(new Color(200, 0, 100));
+        this.scene.getBackground().setColor(new Color(0, 0, 0));
         this.scene.getBackground().fill();
+        
+        for (int i = 1; i <= 2; i++)
+            {
+                Background bg = new Background(i, this.scene.WIDTH, this.scene.HEIGHT);
+                this.scene.addObject(bg, 0, 0);
+                bg.setStartPos();
+                
+                backgrounds.add(bg);
+            }
+        
+        player = new Dumbrarri();
+        this.scene.addObject(player, PLAYER_START_X, PLAYER_START_Y);
     }
     
     public void act() {
-
+        long currentTime = System.currentTimeMillis();
+        
+        if (currentTime - interval > 5000) {
+            gameSpeed++;
+            for (Background bg : backgrounds)
+            {
+                bg.setSpeed(gameSpeed);
+            }
+            
+            interval = currentTime;
+        }
     }
 }

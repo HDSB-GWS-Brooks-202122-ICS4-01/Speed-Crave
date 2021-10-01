@@ -14,8 +14,10 @@ public class Background extends Actor
     private final int ID;
     private int step = 1;
     
-    Background(int id, int SCREEN_WIDTH, int SCREEN_HEIGHT)
+    Background(int gameSpeed, int id, int SCREEN_WIDTH, int SCREEN_HEIGHT)
     {
+        moveSpeed = gameSpeed;
+        
         WIDTH = getImage().getWidth();
         HEIGHT = getImage().getHeight();
         

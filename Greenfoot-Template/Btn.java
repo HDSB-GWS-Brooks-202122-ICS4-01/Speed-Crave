@@ -7,25 +7,15 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @version (a version number or a date)
  */
 public class Btn extends Actor
-{
-    private MouseInfo mi;
-    private boolean isHovered = false;
-    
+{   
     public final String PREFIX = ".\\images\\";
     private String STILL_IMAGE;
     private String HOVER_IMAGE;
     private int WIDTH, HEIGHT;
     private int selectedImg = 0;
-    private boolean isClicked = false;
     
-    /**
-     * Act - do whatever the BtnStart wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
-     */
-    Btn(MouseInfo mi)
-    {
-        this.mi = mi;
-    }
+    private boolean isClicked = false;
+    private boolean isHovered = false;
     
     public void setDims(int w, int h)
     {
@@ -53,14 +43,12 @@ public class Btn extends Actor
     
     public void checkMouseClick()
     {
-        MouseInfo mc = Greenfoot.getMouseInfo();
-        if (mc != null)
+        MouseInfo mi = Greenfoot.getMouseInfo();
+        if (mi != null)
         {
-            int btnNum = mc.getButton();
-            if (btnNum != 0) {
-                
+            int btnNum = mi.getButton();
+            if (btnNum != 0)
                 isClicked = true;
-            }
         }
     }
     

@@ -6,14 +6,14 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class StartBtn extends Btn
+public class HomeBtn extends Btn
 {
-    private final String STILL_IMAGE = ".\\images\\btn_start_0.png";
-    private final String HOVER_IMAGE = ".\\images\\btn_start_1.png";
+    private final String STILL_IMAGE = ".\\images\\btn_home_0.png";
+    private final String HOVER_IMAGE = ".\\images\\btn_home_1.png";
     private final int WIDTH, HEIGHT;
     private int selectedImg = 0;
     
-    StartBtn()
+    HomeBtn()
     {
         WIDTH = getImage().getWidth();
         HEIGHT = getImage().getHeight();

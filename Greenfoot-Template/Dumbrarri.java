@@ -8,8 +8,8 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Dumbrarri extends Car
 {
-    static private final double SPEED = 2.0;
-    static private final int TURN_SPEED = 3;
+    static private final double SPEED = 4.0;
+    static private final int TURN_SPEED = 10;
 
     Dumbrarri()
     {

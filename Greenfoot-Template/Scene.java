@@ -11,11 +11,10 @@ public class Scene extends World
 {
     static public final int WIDTH = 700, HEIGHT = 900;
     private int gamestate = 1; // 1: Intro screen, 2: Game screen, 3: End screen
-    public final MouseInfo mi = Greenfoot.getMouseInfo();
     
-    private final Intro introScreen;
-    private final Game gameScreen;
-    private final End endScreen;
+    private Intro introScreen;
+    private Game gameScreen;
+    private End endScreen;
     
     public final String GAME_NAME = "SPEED CRAVE";
     
@@ -23,14 +22,12 @@ public class Scene extends World
      * Constructor for objects of class Scene.
      * 
      */
+    
     public Scene()
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
             super(WIDTH, HEIGHT, 1, false);
         
-            introScreen = new Intro(this);
-            gameScreen = new Game(this);
-            endScreen = new End(this);
             
             nextScene();
     }
@@ -40,12 +37,15 @@ public class Scene extends World
         switch (gamestate)
         {
             case 1:
+                introScreen = new Intro(this);
                 introScreen.setScene();
                 break;
             case 2:
+                gameScreen = new Game(this);
                 gameScreen.setScene();
                 break;
             case 3:
+                endScreen = new End(this);
                 endScreen.setScene();
                 break;
         }
@@ -79,6 +79,12 @@ public class Scene extends World
                 }
                 break;
             case 3: // End screen
+                endScreen.act();
+                
+                if (endScreen.getReadyForNextScene()) {
+                    gamestate = 1;
+                    resetScene();
+                }
                 break;
         }
     }
@@ -87,7 +93,7 @@ public class Scene extends World
 class Intro
 {
     private final Scene scene;
-    private StartBtn startBtn;
+    private Btn startBtn;
     private boolean readyForNextScene = false; 
     
     Intro(Scene scene)
@@ -101,22 +107,18 @@ class Intro
     }
     
     public void setScene() {
-        this.scene.getBackground().setColor(new Color(200, 200, 200));
+        this.scene.getBackground().setColor(new Color(50, 50, 50));
         this.scene.getBackground().fill();
     
         this.scene.getBackground().setColor(new Color(255, 255, 255));
         this.scene.getBackground().setFont(new Font("Calibre", true, false, 90));
-        this.scene.getBackground().drawString(this.scene.GAME_NAME, 0, 200);
+        this.scene.getBackground().drawString(this.scene.GAME_NAME, this.scene.WIDTH/2 - 640/2, 200);
         
-        startBtn = new StartBtn(this.scene.mi);
-    
+        startBtn = new StartBtn();
         this.scene.addObject(startBtn, this.scene.WIDTH / 2, this.scene.HEIGHT - 200);
     }
     
     public void act() {
-        MouseInfo mouse = Greenfoot.getMouseInfo();
-        
-        System.out.println(mouse.getX());
         if (startBtn.getClicked())
             readyForNextScene = true;
     }
@@ -127,15 +129,22 @@ class Game
     private final Scene scene;
     private boolean readyForNextScene = false; 
     private final int PLAYER_START_X, PLAYER_START_Y;
+    
     private Background[] backgrounds = new Background[2];
     private Car player;
-    private int gameSpeed = 1;
+    
+    private ArrayList<CarAI> carsAI = new ArrayList<CarAI>();
+    private int intervalSinceCarHasBeenAdded = 0;
+    private int intervalToAddCar = 10;
+    
+    private Text gameScore;
+    
+    private int gameSpeed = 10;
     private long interval = System.currentTimeMillis();
     private long startTime = interval;
     
     private Random rand = new Random();
     private int[] spawnLocations = {150, 250, 350, 450, 550};
-    private ArrayList<CarAI> carsAI = new ArrayList<CarAI>();
     
     Game(Scene scene)
     {
@@ -155,9 +164,35 @@ class Game
         return spawnLocations[rand.nextInt(spawnLocations.length - 1)];
     }
     
-    private int getCarY()
+    private int getCarY(boolean firstRun)
     {
-        return -100 - rand.nextInt(200);
+        if (!firstRun)
+            return -100 - rand.nextInt(100 * carsAI.size());
+        return -200;
+    }
+    
+    private void addCar(boolean firstRun)
+    {
+        CarAI car;
+        int carType = (int)Math.floor(Math.random()*3);
+        
+        int xPos = getCarX();
+        int yPos = getCarY(firstRun);
+        
+        int speed = (int)Math.floor(Math.random()*(10-3)+2);
+        
+        if (carType == 0)
+            car = new BlueCar(speed, gameSpeed);
+        else if (carType == 1)
+            car = new GreenCar(speed, gameSpeed);
+        else if (carType == 2)
+            car = new Ambulance(speed, gameSpeed);
+        else
+            car = new BlueCar(speed, gameSpeed);
+            
+        this.scene.addObject(car, xPos, yPos);
+        car.setPos(xPos, yPos);
+        carsAI.add(car);
     }
     
     public void setScene() {
@@ -166,37 +201,42 @@ class Game
         
         for (int i = 1; i <= 2; i++)
         {
-            Background bg = new Background(i, this.scene.WIDTH, this.scene.HEIGHT);
+            Background bg = new Background(gameSpeed, i, this.scene.WIDTH, this.scene.HEIGHT);
             this.scene.addObject(bg, 0, 0);
             bg.setStartPos();
                 
             backgrounds[i - 1] = bg;
         }
         
-        for (int i = 0; i < 3; i++)
-        {
-            CarAI car;
-            int carType = (int)Math.floor(Math.random()*3);
-            
-            if (carType == 0)
-                car = new BlueCar((int)Math.floor(Math.random()*(10-3)+2), gameSpeed);
-            else if (carType == 1)
-                car = new GreenCar((int)Math.floor(Math.random()*(10-3)+2), gameSpeed);
-            else if (carType == 2)
-                car = new Ambulance((int)Math.floor(Math.random()*(10-3)+2), gameSpeed);
-            else
-                car = new BlueCar((int)Math.floor(Math.random()*(10-3)+2), gameSpeed);
-                
-            this.scene.addObject(car, getCarX(), getCarY());
-            carsAI.add(car);
-        }
-        
         player = new Dumbrarri();
         this.scene.addObject(player, PLAYER_START_X, PLAYER_START_Y);
+        
+        for (int i = 0; i < 3; i++)
+        {
+            addCar(true);
+        }
+        
+        gameScore = new Text(new Color(255, 255, 255), 20, this.scene.WIDTH, 200);
+        this.scene.addObject(gameScore, this.scene.WIDTH / 2, 20);        
+    }
+    
+    private void drawTimeAlive(long currentTime)
+    {
+        String timeAlive = Integer.toString((int)((currentTime - startTime) / 1000));
+        
+        gameScore.setText("Time: " + timeAlive);
     }
     
     public void act() {
         long currentTime = System.currentTimeMillis();
+        drawTimeAlive(currentTime);
+        
+        if (intervalSinceCarHasBeenAdded > intervalToAddCar) {
+            intervalSinceCarHasBeenAdded = 0;
+            intervalToAddCar *= 2;
+            
+            addCar(false);
+        }
         
         if (currentTime - interval > 5000) {
             gameSpeed++;
@@ -211,7 +251,7 @@ class Game
                 
                 if (car.checkNeedsReset())
                 {
-                    car.setPos(getCarX(), getCarY()); 
+                    car.setPos(getCarX(), getCarY(false)); 
                 }
                 
                 if (player.checkIntersects(car))
@@ -219,11 +259,15 @@ class Game
             }
             
             interval = currentTime;
+            intervalSinceCarHasBeenAdded++;
         } else {
             for (CarAI car : carsAI)
             {
+                if (car.checkCarIsOnExpectedPos())
+                    car.checkLaneSwitch(player);
+                
                 if (car.checkNeedsReset())
-                    car.setPos(getCarX(), getCarY()); 
+                    car.setPos(getCarX(), getCarY(false)); 
                     
                 if (player.checkIntersects(car))
                     readyForNextScene = true;
@@ -236,7 +280,10 @@ class Game
 class End
 {
         private final Scene scene;
+        private boolean readyForNextScene = false;
         
+        private Btn homeBtn;
+
         End(Scene scene)
         {
             this.scene = scene;
@@ -246,5 +293,19 @@ class End
         {
             this.scene.getBackground().setColor(new Color(93, 173, 226));
             this.scene.getBackground().fill();
+            
+            homeBtn = new HomeBtn();
+            this.scene.addObject(homeBtn, this.scene.WIDTH / 2, this.scene.HEIGHT - 200);
+        }
+        
+        public boolean getReadyForNextScene()
+        {
+            return readyForNextScene;
+        }
+        
+        public void act()
+        {
+            if (homeBtn.getClicked())
+                readyForNextScene = true;
         }
 }

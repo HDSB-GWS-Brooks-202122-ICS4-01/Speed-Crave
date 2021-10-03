@@ -11,17 +11,36 @@ public class Car extends Actor
     private final int WIDTH, HEIGHT;
     
     private int direction = 0;  // 1: move right, -1: move left, 0: move strait.
+    private int prevDirec = 0;
     
-    private final double SPEED;
-    private final int TURN_SPEED;
+    private int speed = 8;
+    private int turnSpeed = 4;
     
-    Car (double speed, int tSpeed)
+    private final double SPEED = 8;
+    private final int TURN_SPEED = 4;
+    
+    private boolean allowedToMove = true;
+
+    Car (String imgPath)
     {
+        setImage(imgPath);
+        
         WIDTH = getImage().getWidth();
         HEIGHT = getImage().getHeight();
-        
-        this.SPEED = speed;
-        this.TURN_SPEED = tSpeed;
+    }
+    
+    public void increaseAttributes()
+    {
+        if (speed < 20)
+            speed++;
+            
+        if (turnSpeed < 5)
+            turnSpeed++;
+    }
+    
+    public void setAllowedToMove(boolean val)
+    {
+        allowedToMove = val;
     }
     
     public boolean checkIntersects(CarAI obj)
@@ -30,13 +49,16 @@ public class Car extends Actor
     }
     
     public void setDirection()
-    {
+    {   
         if ((Greenfoot.isKeyDown("right") || Greenfoot.isKeyDown("d")) && !(Greenfoot.isKeyDown("left") || Greenfoot.isKeyDown("a")))
             direction = 1;
         else if ((Greenfoot.isKeyDown("left") || Greenfoot.isKeyDown("a")) && !(Greenfoot.isKeyDown("right") || Greenfoot.isKeyDown("d")))
             direction = -1;
-        else
+        else {
+            if (direction != 0)
+                prevDirec = direction;
             direction = 0;
+        }
     }
     
     public double getTurnPerc(double currentRot)
@@ -65,42 +87,44 @@ public class Car extends Actor
      */  
     public void act()
     {
-        int currentRotation = getRotation();
-        
-        setDirection();
-        
-        if (direction != 0) {
-            boolean hitEdge = checkHitEdge();
+        if (allowedToMove) {
+            int currentRotation = getRotation();
             
-            int x = getX(), y = getY();
+            setDirection();
             
-            if (!hitEdge)
-                setLocation((int)(x + SPEED * direction * getTurnPerc((double)currentRotation)), y);
-            else {
-                setLocation((int)(x - SPEED * direction * getTurnPerc((double)currentRotation)), y);
-            }
-        }
-        
-        switch (direction)
-        {
-
-            case 0:
-                if (currentRotation != 0)
-                {
-                    if (currentRotation > 180)
-                        setRotation(currentRotation + TURN_SPEED);
-                    else
-                        setRotation(currentRotation - TURN_SPEED);
+            if (direction != 0) {
+                boolean hitEdge = checkHitEdge();
+                
+                int x = getX(), y = getY();
+                
+                if (!hitEdge)
+                    setLocation((int)(x + speed * direction * getTurnPerc((double)currentRotation)), y);
+                else {
+                    setLocation((int)(x - speed * direction * getTurnPerc((double)currentRotation)), y);
                 }
-                break;
-            case 1:
-                if (currentRotation < 30 || currentRotation >= 330)
-                    setRotation(currentRotation + TURN_SPEED);
-                break;
-            case -1:
-                if (currentRotation > 330 || (currentRotation < 330 && currentRotation != 330))
-                    setRotation(currentRotation - TURN_SPEED);
-                break;
+            }
+             
+            switch (direction)
+            {
+                
+                case 0:
+                    if (currentRotation != 0)
+                    {
+                        if (currentRotation <= (30 + 30 % turnSpeed))
+                            setRotation(currentRotation - turnSpeed);
+                        else
+                            setRotation(currentRotation + turnSpeed);
+                    }
+                    break;
+                case 1:
+                    if (currentRotation < (30 + 30 % turnSpeed) || currentRotation >= (330 - 30 % turnSpeed))
+                        setRotation(currentRotation + turnSpeed);
+                    break;
+                case -1:
+                    if (currentRotation > (330 - 30 % turnSpeed) || currentRotation <= (30 + 30 % turnSpeed))
+                        setRotation(currentRotation - turnSpeed);
+                    break;
+            }
         }
     }
 }

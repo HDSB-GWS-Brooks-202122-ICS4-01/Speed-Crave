@@ -23,6 +23,12 @@ public class Btn extends Actor
         HEIGHT = h; 
     }
     
+    public void reset() 
+    {
+        isClicked = false;
+        isHovered = false;
+    }
+    
     public boolean getClicked()
     {
         return isClicked;

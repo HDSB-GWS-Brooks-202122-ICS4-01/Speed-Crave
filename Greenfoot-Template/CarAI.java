@@ -1,4 +1,6 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import java.util.*;
+
 
 /**
  * Write a description of class CarAI here.
@@ -18,13 +20,15 @@ public class CarAI extends Actor
     
     public boolean needsReset = false;
     
-    CarAI(int moveSpeed, int gameSpeed, int WIDTH, int HEIGHT)
+    CarAI(int moveSpeed, int gameSpeed, String imgPath)
     {
         this.moveSpeed = moveSpeed;
         this.gameSpeed = gameSpeed;
         
-        this.WIDTH = WIDTH;
-        this.HEIGHT = HEIGHT;
+        setImage(imgPath);
+        
+        WIDTH = getImage().getWidth();
+        HEIGHT = getImage().getHeight();
     }
     
     public void setPos(int x, int y)
@@ -41,6 +45,16 @@ public class CarAI extends Actor
         gameSpeed++;
     }
     
+    public void setGameSpeed(int gameSpeed)
+    {
+        this.gameSpeed = gameSpeed;
+    }
+    
+    public void setMoveSpeed(int speed)
+    {
+        moveSpeed = speed;
+    }
+    
     public boolean checkOutOfBounds()
     {
         return getY() - HEIGHT > getWorld().getHeight();
@@ -51,6 +65,23 @@ public class CarAI extends Actor
         return needsReset;
     }
     
+    private void checkOtherCars()
+    {
+        List<CarAI> cars = getNeighbours(200, false, CarAI.class);
+            
+        for (CarAI car : cars)
+        {
+            if ((Math.abs(car.getX() - getX()) < 50 && car.getY() < getY() && car.moveSpeed < moveSpeed) || (intersects(car) && getY() < car.getY())) {
+               if (getX() > getWorld().getWidth() / 2)
+                    setNewGoToPos(getX() - 100);
+                else
+                    setNewGoToPos(getX() + 100);
+                
+                break;
+            }            
+        }
+    }
+    
     public void checkLaneSwitch(Actor player)
     {        
         int yAI = getY();
@@ -58,7 +89,7 @@ public class CarAI extends Actor
         
         int yPlayer = player.getY();
         int xPlayer = player.getX();
-        
+
         
         if (!checkedLaneSwitchForRun && Math.abs(xPlayer - xAI) <= 100 && Math.abs(xPlayer - xAI) > 30) {
             checkedLaneSwitchForRun = true;
@@ -72,29 +103,41 @@ public class CarAI extends Actor
                 }
                     
                 if (xPlayer > xAI)
-                    expectedXPos = xAI + 100;
+                    setNewGoToPos(xAI + 100);
                 else if (xPlayer < xAI)
-                    expectedXPos = xAI - 100;
+                    setNewGoToPos(xAI - 100);
                     
                 randLimit = 10;
             }
         }
     }
     
-    public boolean checkCarIsOnExpectedPos()
+    private void setNewGoToPos(int newX)
     {
-        return getX() == expectedXPos || Math.abs(getX() - expectedXPos) <= 10;
+        expectedXPos = newX;
     }
     
-    private void moveCarToExpectedPos()
+    public boolean checkCarIsOnExpectedPos()
     {
-        if (Math.abs(expectedXPos - getX()) <= 10)
+        return getX() == expectedXPos;
+    }
+    
+    private void moveCarToExpectedPos(int currentRotation)
+    {
+        if (Math.abs(expectedXPos - getX()) <= moveSpeed)
             setLocation(expectedXPos, getY());
-     
-        if (getX() < expectedXPos)
+        
+        if (getX() < expectedXPos) {
            setLocation(getX() + moveSpeed, getY());
-        else if (getX() > expectedXPos)
+           
+           if (currentRotation < 30 || currentRotation >= 330)
+               setRotation(currentRotation + 2);
+        } else if (getX() > expectedXPos) {
             setLocation(getX() - moveSpeed, getY());
+            
+            if (currentRotation > 330 || currentRotation <= 30)
+                setRotation(currentRotation - 2);
+        }
     }
     
     /**
@@ -106,10 +149,20 @@ public class CarAI extends Actor
         setLocation(getX(), getY() - moveSpeed);
         setLocation(getX(), getY() + gameSpeed);
         
+        int currentRotation = getRotation();
+        
         if (checkOutOfBounds())
             needsReset = true;
             
         if (!checkCarIsOnExpectedPos())
-            moveCarToExpectedPos();
+            moveCarToExpectedPos(currentRotation);
+        else if (currentRotation != 0)
+                {
+                    if (currentRotation <= 30)
+                        setRotation(currentRotation - 2);
+                    else
+                        setRotation(currentRotation + 2);
+                }
+        checkOtherCars(); 
     }
 }

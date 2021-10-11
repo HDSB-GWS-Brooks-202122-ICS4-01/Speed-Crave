@@ -13,14 +13,14 @@ public class Car extends Actor
     private int direction = 0;  // 1: move right, -1: move left, 0: move strait.
     private int prevDirec = 0;
     
-    private int speed = 8;
-    private int turnSpeed = 4;
-    
     private final double SPEED = 8;
     private final int TURN_SPEED = 4;
     
     private boolean allowedToMove = true;
-
+    
+    /**
+     * Constructor for the Car class.
+     */
     Car (String imgPath)
     {
         setImage(imgPath);
@@ -29,25 +29,27 @@ public class Car extends Actor
         HEIGHT = getImage().getHeight();
     }
     
-    public void increaseAttributes()
-    {
-        if (speed < 20)
-            speed++;
-            
-        if (turnSpeed < 5)
-            turnSpeed++;
-    }
-    
+    /**
+     * This method sets the car to be able to move or not move.
+     * @param val   true or false value to set the access of the car.
+     */
     public void setAllowedToMove(boolean val)
     {
         allowedToMove = val;
     }
     
+    /**
+     * This method checks if the car is intersecting with an AI car.
+     * @param obj   Car AI object
+     */
     public boolean checkIntersects(CarAI obj)
     {
         return intersects(obj);
     }
     
+    /**
+     * This method sets the direction of travel.
+     */
     public void setDirection()
     {   
         if ((Greenfoot.isKeyDown("right") || Greenfoot.isKeyDown("d")) && !(Greenfoot.isKeyDown("left") || Greenfoot.isKeyDown("a")))
@@ -61,6 +63,11 @@ public class Car extends Actor
         }
     }
     
+    /**
+     * This method calculates the turn percentage and returns it.
+     * @param  currentRot    Current rotation of the car
+     * @return doube         Double value between 0-1.
+     */
     public double getTurnPerc(double currentRot)
     {
         if (currentRot > 180) {
@@ -72,6 +79,10 @@ public class Car extends Actor
         }
     }
     
+    /**
+     * This method checks if the car is hitting the edge.
+     * @return  boolean True or false
+     */
     public boolean checkHitEdge() 
     {
         if (direction == 1) {
@@ -98,9 +109,9 @@ public class Car extends Actor
                 int x = getX(), y = getY();
                 
                 if (!hitEdge)
-                    setLocation((int)(x + speed * direction * getTurnPerc((double)currentRotation)), y);
+                    setLocation((int)(x + SPEED * direction * getTurnPerc((double)currentRotation)), y);
                 else {
-                    setLocation((int)(x - speed * direction * getTurnPerc((double)currentRotation)), y);
+                    setLocation((int)(x - SPEED * direction * getTurnPerc((double)currentRotation)), y);
                 }
             }
              
@@ -110,19 +121,19 @@ public class Car extends Actor
                 case 0:
                     if (currentRotation != 0)
                     {
-                        if (currentRotation <= (30 + 30 % turnSpeed))
-                            setRotation(currentRotation - turnSpeed);
+                        if (currentRotation <= (30 + 30 % TURN_SPEED))
+                            setRotation(currentRotation - TURN_SPEED);
                         else
-                            setRotation(currentRotation + turnSpeed);
+                            setRotation(currentRotation + TURN_SPEED);
                     }
                     break;
                 case 1:
-                    if (currentRotation < (30 + 30 % turnSpeed) || currentRotation >= (330 - 30 % turnSpeed))
-                        setRotation(currentRotation + turnSpeed);
+                    if (currentRotation < (30 + 30 % TURN_SPEED) || currentRotation >= (330 - 30 % TURN_SPEED))
+                        setRotation(currentRotation + TURN_SPEED);
                     break;
                 case -1:
-                    if (currentRotation > (330 - 30 % turnSpeed) || currentRotation <= (30 + 30 % turnSpeed))
-                        setRotation(currentRotation - turnSpeed);
+                    if (currentRotation > (330 - 30 % TURN_SPEED) || currentRotation <= (30 + 30 % TURN_SPEED))
+                        setRotation(currentRotation - TURN_SPEED);
                     break;
             }
         }

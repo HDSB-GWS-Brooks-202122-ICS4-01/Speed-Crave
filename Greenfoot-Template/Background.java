@@ -9,39 +9,54 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Background extends Actor
 {
     private final int WIDTH, HEIGHT;
-    private final int SCREEN_WIDTH, SCREEN_HEIGHT;
+    private final int SCREEN_HEIGHT;
     private int moveSpeed = 1;
-    private final int ID;
     private int step = 1;
     
-    Background(int gameSpeed, int id, int SCREEN_WIDTH, int SCREEN_HEIGHT)
+    /**
+     * Constructor for the Background class.
+     * @param gameSpeed         The speed at which all objects are running at
+     * @param id                The index of the background (starts at 1)
+     * @param SCREEN_HEIGHT     Height of the world
+     */
+    Background(int gameSpeed, int id, int SCREEN_HEIGHT)
     {
         moveSpeed = gameSpeed;
         
         WIDTH = getImage().getWidth();
         HEIGHT = getImage().getHeight();
+         
+        this.step = id;
         
-        ID = id;   
-        step = ID;
-        
-        this.SCREEN_WIDTH = SCREEN_WIDTH;
         this.SCREEN_HEIGHT = SCREEN_HEIGHT;
     }
     
+    /**
+     * This method sets the starting postion of the background.
+     * @return Nothing.
+     */
     public void setStartPos()
     {
-        int x = SCREEN_WIDTH / 2;
         int y = (-HEIGHT * step) + (HEIGHT / 2) + SCREEN_HEIGHT;
         
-        setLocation(x, y); 
+        setLocation(getX(), y); 
         step = 1;
     }
     
+    /**
+     * This method resets the position of the background.
+     * @return Nothing
+     */
     public void setOffset()
     {
         setLocation(getX(), getY() - HEIGHT * 2); 
     }
     
+    /**
+     * This method sets the move speed of the background.
+     * @param speed     New move speed.
+     * @return          Nothing
+     */
     public void setSpeed(int speed){
         this.moveSpeed = speed;
     }

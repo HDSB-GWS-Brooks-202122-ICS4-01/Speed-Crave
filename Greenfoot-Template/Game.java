@@ -30,6 +30,8 @@ class Game
     private boolean gameover = false;
     private long timeSinceGameover = 0;
     
+    private int score;
+    
     Game(Scene scene, String car)
     {
         this.scene = scene;
@@ -42,6 +44,16 @@ class Game
     public int getNextState()
     {
         return nextState;
+    }
+    
+    private void setScore(long currentTime)
+    {
+        score = (int)((currentTime - startTime) / 1000);
+    }
+    
+    public int getScore()
+    {
+        return score;
     }
     
     private int getCarX()
@@ -81,8 +93,8 @@ class Game
         
         for (int i = 1; i <= 2; i++)
         {
-            Background bg = new Background(gameSpeed, i, scene.WIDTH, scene.HEIGHT);
-            scene.addObject(bg, 0, 0);
+            Background bg = new Background(gameSpeed, i, scene.HEIGHT);
+            scene.addObject(bg, scene.WIDTH / 2, 0);
             bg.setStartPos();
                 
             backgrounds[i - 1] = bg;
@@ -97,7 +109,9 @@ class Game
         }
         
         gameScore = new Text(new Color(255, 255, 255), new greenfoot.Font("ARIAL", true, false, 30));
-        scene.addObject(gameScore, scene.WIDTH / 2, 20);        
+        scene.addObject(gameScore, scene.WIDTH / 2, 20);    
+        
+        scene.setPaintOrder(Text.class, Car.class, CarAI.class, Background.class);
     }
     
     private void setActorStatesToGameover(long currentTime)
@@ -119,12 +133,15 @@ class Game
         gameover = true;
         timeSinceGameover = currentTime;
         
-        scene.addText("You Crashed!", new Font("MONOSPACED", true, false, 50), Color.RED, scene.WIDTH / 2, scene.HEIGHT / 2, true, true);
+        gameScore.setColor(Color.RED);
+        gameScore.setPos(scene.WIDTH / 2, scene.HEIGHT / 2);
+        gameScore.setText("You Crashed!");
     }
     
     private void drawTimeAlive(long currentTime)
     {
-        String timeAlive = Integer.toString((int)((currentTime - startTime) / 1000));
+        setScore(currentTime);
+        String timeAlive = Integer.toString(getScore());
         
         gameScore.setText("SCORE: " + timeAlive);
     }
@@ -135,7 +152,7 @@ class Game
         if (!gameover) {
             drawTimeAlive(currentTime);
             
-            if (intervalSinceCarHasBeenAdded >= intervalToAddCar) {
+            if (intervalSinceCarHasBeenAdded >= 2) {
                 intervalSinceCarHasBeenAdded = 0;
                 
                 addCar(false);

@@ -16,7 +16,8 @@ public class CarAI extends Actor
     
     private int expectedXPos = 0;
     private boolean checkedLaneSwitchForRun = false;
-    private int randLimit = 10;
+    private final int RAND_UPPER = 6;
+    private int randLimit = RAND_UPPER;
     
     public boolean needsReset = false;
     
@@ -72,7 +73,7 @@ public class CarAI extends Actor
         for (CarAI car : cars)
         {
             if ((Math.abs(car.getX() - getX()) < 50 && car.getY() < getY() && car.moveSpeed < moveSpeed) || (intersects(car) && getY() < car.getY())) {
-               if (getX() > getWorld().getWidth() / 2)
+               if (getX() <= car.getX())
                     setNewGoToPos(getX() - 100);
                 else
                     setNewGoToPos(getX() + 100);
@@ -86,19 +87,19 @@ public class CarAI extends Actor
     {        
         int yAI = getY();
         int xAI = getX();
-        
+    
         int yPlayer = player.getY();
         int xPlayer = player.getX();
 
         
-        if (!checkedLaneSwitchForRun && Math.abs(xPlayer - xAI) <= 100 && Math.abs(xPlayer - xAI) > 30) {
+        if (!checkedLaneSwitchForRun && Math.abs(xPlayer - xAI) <= 100 && Math.abs(xPlayer - xAI) > 10) {
             checkedLaneSwitchForRun = true;
             int randCheck = (int)Math.floor(Math.random()*(randLimit-1));
-            
+       
             if (Math.abs(yPlayer - yAI) > 250 && yAI < yPlayer) {
-                if (randCheck != 1) {
-                    if (randLimit > 2)
-                        randLimit -= 2;
+                if (randCheck != 0) {
+                    if (randLimit > 1)
+                        randLimit--;
                     return;
                 }
                     
@@ -107,8 +108,21 @@ public class CarAI extends Actor
                 else if (xPlayer < xAI)
                     setNewGoToPos(xAI - 100);
                     
-                randLimit = 10;
+                randLimit = RAND_UPPER;
             }
+        }
+    }
+    
+    /**
+     * This method checks if the car is hitting the edge.
+     * @return  boolean True or false
+     */
+    public boolean checkHitEdge() 
+    {
+        if (getX() < expectedXPos) { //Moving to the right
+            return getX() + WIDTH * Math.cos((getRotation() * Math.PI) / 180.0) >= 600;
+        } else { // Moving to the left
+             return getX() - WIDTH * Math.cos((getRotation() * Math.PI) / 180.0) <= 100;
         }
     }
     
@@ -163,6 +177,15 @@ public class CarAI extends Actor
                     else
                         setRotation(currentRotation + 2);
                 }
+                
         checkOtherCars(); 
+        
+        if (checkHitEdge())
+        {
+            if (getX() > getWorld().getWidth() / 2)
+                setPos(getX() - moveSpeed, getY());
+            else
+                setPos(getX() + moveSpeed, getY());
+        }
     }
 }

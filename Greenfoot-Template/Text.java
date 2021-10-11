@@ -28,6 +28,11 @@ public class Text extends Actor
         setLocation(x, y);
     }
     
+    public void setColor(Color c)
+    {
+        color = c;
+    }
+    
     public void setText(String newText){   
         // Creates new image
         GreenfootImage img = new GreenfootImage(1, 1);

@@ -33,6 +33,10 @@ public class Text extends Actor
         color = c;
     }
     
+    /**
+     * This method sets the text of this actor.
+     * @param newText     String value of the text to display.
+     */
     public void setText(String newText){   
         // Creates new image
         GreenfootImage img = new GreenfootImage(1, 1);
@@ -47,18 +51,22 @@ public class Text extends Actor
         g2.setFont(new java.awt.Font(FONT.getName(), FONT.isBold() ? 1 : 0, FONT.getSize()));
         Rectangle bounds = getStringBounds(g2, newText, 0, 0);
         
-        img.scale(fm.stringWidth(newText), (int)Math.round(bounds.getHeight()));
+        img.scale(fm.stringWidth(newText), FONT.getSize());
+        img.setColor(Color.GRAY);
+        img.fill();
         
         int w = img.getWidth();
         int h = img.getHeight();
         
         img.setColor(color);
         img.setFont(FONT);
-        img.drawString(newText, 0, h);
+        System.out.println(h);
+        img.drawString(newText, 0, (int)bounds.getHeight());
         
         setImage(img);
     }
     
+    // NOT MY CODE: credits to https://stackoverflow.com/questions/368295/how-to-get-real-string-height-in-java
     private Rectangle getStringBounds(Graphics2D g2, String str,
                                       float x, float y)
     {

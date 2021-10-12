@@ -27,15 +27,13 @@ public class Scene extends World
     
     /**
      * Constructor for objects of class Scene.
-     * 
      */
-    
     public Scene()
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
-            super(WIDTH, HEIGHT, 1, false);
+        super(WIDTH, HEIGHT, 1, false);
         
-            nextScene();
+        nextScene();
     }
     
     /**

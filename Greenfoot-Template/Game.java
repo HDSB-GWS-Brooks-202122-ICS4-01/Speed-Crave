@@ -24,7 +24,7 @@ class Game
     
     private Car player;
     private final String CAR;
-    private final GasolineBar G_BAR = new GasolineBar(150, 30);
+    private final Bar G_BAR = new Bar(150, 30);
     
     private final ArrayList<CarAI> carsAI = new ArrayList<CarAI>();
     private final String[] CAR_PATHS = { "car_BlackOut", "car_BlueStrip", "car_GreenStrip", "car_PinkStrip", "car_RedStrip", "car_WhiteStrip",  "car01-n", "car02-n", "car03-n", "ambulance-n"};
@@ -123,7 +123,7 @@ class Game
         G_BAR.alignLeftX();
         G_BAR.alignBottomY();
         
-        scene.setPaintOrder(Text.class, GasolineBar.class, Car.class, CarAI.class, Gas.class, Background.class);
+        scene.setPaintOrder(Text.class, Bar.class, Car.class, CarAI.class, Gas.class, Background.class);
     }
     
     private void setActorStatesToGameover(long currentTime, boolean crashed)
@@ -175,6 +175,7 @@ class Game
                 interval = currentTime;
                 intervalSinceCarHasBeenAdded++;
                 
+                player.setGameSpeed(gameSpeed);
                 gas.setGameSpeed(gameSpeed);
             }
             

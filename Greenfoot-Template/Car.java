@@ -21,11 +21,14 @@ public class Car extends Actor
     private final int MAX_GAS = 1000;
     private int gasoline = 1000;
     
-    private final GasolineBar G_BAR;
+    private final Bar G_BAR;
+    
+    private int gameSpeed = 1;
+    
     /**
      * Constructor for the Car class.
      */
-    Car (String imgPath, GasolineBar gbar)
+    Car (String imgPath, Bar gbar)
     {
         setImage(imgPath);
         
@@ -61,11 +64,19 @@ public class Car extends Actor
         return intersects(obj);
     }
     
+    /**
+     * This method checks if the car is intersecting with the gasoline.
+     * @param obj   Gas object
+     */
     public boolean checkGasIntersects(Gas obj)
     {
         return intersects(obj);
     }
     
+    /**
+     * This method checks if the car is out of fuel, and returns the boolean value.
+     * @retutn boolean true or false
+     */
     public boolean checkOutOfFuel()
     {
         return gasoline <= 0;
@@ -87,6 +98,10 @@ public class Car extends Actor
         }
     }
     
+    /**
+     * This retutns the fuel remaining as a percentage.
+     * @return double   a decimal point value from 0-1
+     */
     private double getFuelPerc()
     {
         return (double)gasoline/(double)MAX_GAS;
@@ -121,6 +136,11 @@ public class Car extends Actor
         }
     }
     
+    public void setGameSpeed(int gamespeed)
+    {
+        this.gameSpeed = gameSpeed;
+    }
+    
     /**
      * Act - do whatever the Car wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
@@ -128,7 +148,7 @@ public class Car extends Actor
     public void act()
     {
         if (allowedToMove) {
-            gasoline--;
+            gasoline -= gameSpeed;
             G_BAR.setPerc(getFuelPerc());
             
             int currentRotation = getRotation();

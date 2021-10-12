@@ -6,12 +6,17 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class GasolineBar extends Actor
+public class Bar extends Actor
 {
     private final int WIDTH, HEIGHT;
     private double perc = 1;
     
-    GasolineBar(int w, int h)
+    /**
+     * Constructor for the Bar class
+     * @param w     Int value for the width of the bar.
+     * @param h     Int value for the height of the bat,
+     */
+    Bar(int w, int h)
     {
         WIDTH = w;
         HEIGHT = h;
@@ -19,11 +24,23 @@ public class GasolineBar extends Actor
         drawShape();
     }
     
+    /**
+     * This method sets the percentage of the bar.
+     * @param newPerc     Double value for percentage. Between (0-1).
+     */
     public void setPerc(double newPerc)
     {
+        if (newPerc > 1)
+            newPerc = 1;
+        else if (newPerc < 0)
+            newPerc = 0;
+            
         perc = newPerc;
     }
     
+    /**
+     * This method sets the image of the actor.
+     */
     public void drawShape()
     {
         GreenfootImage img = new GreenfootImage(WIDTH, HEIGHT);

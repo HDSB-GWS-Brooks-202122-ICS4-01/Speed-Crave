@@ -8,6 +8,10 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Display extends Actor
 {
+    /**
+     * Constructor for the Display class
+     * @param path     String path for image to display.
+     */
     public void setNewImage(String path)
     {
         setImage(path);

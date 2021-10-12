@@ -18,15 +18,21 @@ public class Car extends Actor
     
     private boolean allowedToMove = true;
     
+    private final int MAX_GAS = 1000;
+    private int gasoline = 1000;
+    
+    private final GasolineBar G_BAR;
     /**
      * Constructor for the Car class.
      */
-    Car (String imgPath)
+    Car (String imgPath, GasolineBar gbar)
     {
         setImage(imgPath);
         
         WIDTH = getImage().getWidth();
         HEIGHT = getImage().getHeight();
+        
+        G_BAR = gbar;
     }
     
     /**
@@ -38,13 +44,31 @@ public class Car extends Actor
         allowedToMove = val;
     }
     
+    public void addFuel()
+    {
+        gasoline += 200;
+        
+        if (gasoline > MAX_GAS)
+            gasoline = MAX_GAS;
+    }
+    
     /**
      * This method checks if the car is intersecting with an AI car.
      * @param obj   Car AI object
      */
-    public boolean checkIntersects(CarAI obj)
+    public boolean checkCarIntersects(CarAI obj)
     {
         return intersects(obj);
+    }
+    
+    public boolean checkGasIntersects(Gas obj)
+    {
+        return intersects(obj);
+    }
+    
+    public boolean checkOutOfFuel()
+    {
+        return gasoline <= 0;
     }
     
     /**
@@ -61,6 +85,11 @@ public class Car extends Actor
                 prevDirec = direction;
             direction = 0;
         }
+    }
+    
+    private double getFuelPerc()
+    {
+        return (double)gasoline/(double)MAX_GAS;
     }
     
     /**
@@ -99,6 +128,9 @@ public class Car extends Actor
     public void act()
     {
         if (allowedToMove) {
+            gasoline--;
+            G_BAR.setPerc(getFuelPerc());
+            
             int currentRotation = getRotation();
             
             setDirection();

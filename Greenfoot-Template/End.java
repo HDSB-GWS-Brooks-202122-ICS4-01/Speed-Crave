@@ -10,13 +10,33 @@ class End
         
         private Btn homeBtn;
         private final int SCORE;
-
-        End(Scene SCENE, int SCORE)
+        private final int HIGHSCORE;
+        
+        /**
+         * Constructor for the End class
+         * @param SCENE     The world object.
+         * @param SCORE     The score the user gets at the end of the game.
+         */
+        End(Scene SCENE, int SCORE, int HIGHSCORE)
         {
             this.SCENE = SCENE;
             this.SCORE = SCORE;
+            this.HIGHSCORE = HIGHSCORE;
         }
         
+        /**
+        * This method returns an integer value corresponding with a new game state.
+        * @return int      Integer value for the next state. 0 indicates that the game state should not change.
+        */
+        public int getNextState()
+        {
+            return nextState;
+        }
+        
+        /**
+         * This method returns a string based on the player's score.
+         * @return String          Text to be outputed.
+         */
         private String getScoreText()
         {
             if (SCORE < 20) 
@@ -33,32 +53,47 @@ class End
             return "A master, you are!";
         }
         
+        /**
+         * This method sets the end screen scene.
+         */
         public void setScene()
-        {        
+        {      
+            // Set background color.
             SCENE.getBackground().setColor(new Color(93, 173, 226));
             SCENE.getBackground().fill();
             
+            // Get post game message
             String[] messages = getScoreText().split("\n");
             Font mFont = new Font("MONOSPACED", true, false, 50);
             Font sFont = new Font("ARIAL", true, false, 60);
             
+            // Display the post game message
             for (int i = 0; i < messages.length; i++)
             {
                 SCENE.addText(messages[i], mFont, Color.BLACK, SCENE.WIDTH/2, 100 + 50 * i, false, true);
             }
             
+            // Display the score
             SCENE.addText("SCORE", sFont, Color.BLACK, SCENE.WIDTH/2, SCENE.HEIGHT / 2, false, true);
             SCENE.addText(Integer.toString(SCORE), sFont, Color.BLACK, SCENE.WIDTH/2, SCENE.HEIGHT / 2 + 60, false, true);
             
+            String highscoreText = (SCORE > HIGHSCORE) ? "NEW HIGHSCORE" : "HIGHSCORE"; 
+            
+            // Display the score
+            SCENE.addText(highscoreText, sFont, Color.BLACK, SCENE.WIDTH/2, SCENE.HEIGHT / 2 + 180, false, true);
+            SCENE.addText(Integer.toString((SCORE > HIGHSCORE) ? SCORE : HIGHSCORE), sFont, Color.BLACK, SCENE.WIDTH/2, SCENE.HEIGHT / 2 + 240, false, true);
+            
+            // Add home button
             homeBtn = new HomeBtn();
-            SCENE.addObject(homeBtn, SCENE.WIDTH / 2, SCENE.HEIGHT - 200);
+            SCENE.addObject(homeBtn, SCENE.WIDTH / 2, SCENE.HEIGHT - 100);
+            
+            SCENE.updateDataFile(SCORE, HIGHSCORE);
         }
         
-        public int getNextState()
-        {
-            return nextState;
-        }
-        
+        /**
+         * Act - do whatever the End wants to do. This method is called whenever
+         * the 'Act' or 'Run' button gets pressed in the environment.
+         */
         public void act()
         {
             if (homeBtn.getClicked())

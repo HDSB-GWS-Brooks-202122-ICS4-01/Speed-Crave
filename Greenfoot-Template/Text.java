@@ -17,17 +17,31 @@ public class Text extends Actor
     private Color color;
     private final greenfoot.Font FONT;
     
+    /**
+     * Constructor for the Text class.
+     * @param c     greenfoot.Color object.
+     * @param f     greenfoot.Font object.
+     */
     public Text(Color c, greenfoot.Font f)
     {
         color = c;
         FONT = f;
     }
     
+    /**
+     * This method sets the position of the actor
+     * @param x     Integer value for the x position.
+     * @param y     Integer value for the y position.
+     */
     public void setPos(int x, int y)
     {
         setLocation(x, y);
     }
     
+    /**
+     * This method sets the color of the text.
+     * @param c     greenfoot.Color object
+     */
     public void setColor(Color c)
     {
         color = c;
@@ -49,19 +63,18 @@ public class Text extends Actor
         FontMetrics fm = g.getFontMetrics(f);
 
         g2.setFont(new java.awt.Font(FONT.getName(), FONT.isBold() ? 1 : 0, FONT.getSize()));
-        Rectangle bounds = getStringBounds(g2, newText, 0, 0);
+        // Will get the bounds of the letter 'i', important because only the height is neccessary and characters like 'p' are offset so the height is different.
+        Rectangle bounds = getStringBounds(g2, "I", 0, 0);
         
         img.scale(fm.stringWidth(newText), FONT.getSize());
-        img.setColor(Color.GRAY);
-        img.fill();
         
         int w = img.getWidth();
         int h = img.getHeight();
         
         img.setColor(color);
         img.setFont(FONT);
-        System.out.println(h);
-        img.drawString(newText, 0, (int)bounds.getHeight());
+ 
+        img.drawString(newText, 0, (int)(h - (h - bounds.getHeight()) / 2));
         
         setImage(img);
     }

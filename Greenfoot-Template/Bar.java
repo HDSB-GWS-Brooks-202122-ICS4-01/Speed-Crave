@@ -48,31 +48,45 @@ public class Bar extends Actor
         img.setColor(new Color(153, 163, 164));
         img.fill();
         
-        int dWidth = (int)(WIDTH / 1.1);
-        int dHeight = (int)(HEIGHT / 1.5);
+        // The inner rectangle dimensions
+        int displayWidth = (int)(WIDTH / 1.1);
+        int displayHeight = (int)(HEIGHT / 1.5);
         
-        int x = (WIDTH - dWidth) / 2;
-        int y = (HEIGHT - dHeight) / 2;
+        // Starting position of the inner rectangle
+        int x = (WIDTH - displayWidth) / 2;
+        int y = (HEIGHT - displayHeight) / 2;
         
+        // Background color of the inner bar
         img.setColor(Color.WHITE);
-        img.fillRect(x, y, dWidth, dHeight);
+        img.fillRect(x, y, displayWidth, displayHeight);
         
+        // Inner rectangle of the inner rectange...? Basically the percentage
         img.setColor(new Color(255, 85, 0));
-        img.fillRect(x, y, (int)(dWidth * perc), dHeight);
+        img.fillRect(x, y, (int)(displayWidth * perc), displayHeight);
         
         setImage(img);  
     }
     
+    /**
+     * This method aligns the bar so that the x position it has will become it's left most position.
+     */
     public void alignLeftX()
     {
         setLocation(getX() + WIDTH / 2, getY());
     }
     
+    /**
+     * This method aligns the bar so that the y position it has will become the bottom most position.
+     */
     public void alignBottomY()
     {
         setLocation(getX(), getY() - HEIGHT / 2);
     }
     
+    /**
+     * Act - do whatever the Bar wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
     public void act()
     {
         drawShape();

@@ -8,10 +8,10 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Background extends Actor
 {
-    private final int WIDTH, HEIGHT;
-    private final int SCREEN_HEIGHT;
-    private int moveSpeed = 1;
-    private int step = 1;
+    private final int WIDTH, HEIGHT;        // Width and height of image
+    private final int SCREEN_HEIGHT;        // Height of world
+    private int moveSpeed = 1;              // Move speed
+    private int step = 1;                   // Step, used as a multiplier
     
     /**
      * Constructor for the Background class.
@@ -37,6 +37,7 @@ public class Background extends Actor
      */
     public void setStartPos()
     {
+        // Set the y position to be right on top of the other background
         int y = (-HEIGHT * step) + (HEIGHT / 2) + SCREEN_HEIGHT;
         
         setLocation(getX(), y); 

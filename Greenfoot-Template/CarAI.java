@@ -16,8 +16,8 @@ public class CarAI extends Actor
     
     private int expectedXPos = 0;                       // Where the AI car is supposed to be in the x postion
     private boolean checkedLaneSwitchForRun = false;    // Tracks if the AI car attempted to switch lanes in a run.
-    private final int RAND_UPPER = 1;                   // Max random value for lane switch.
-    private int randLimit = RAND_UPPER;                 // The random limit (decrease with each run)
+    private final int RAND_UPPER;                       // Max random value for lane switch.
+    private int randLimit;                 // The random limit (decrease with each run)
     
     private final Random RAND = new Random();
     
@@ -29,7 +29,7 @@ public class CarAI extends Actor
      * @param gameSpeed     int value for how fast the car travels backwards.
      * @param imgPath       String value for the image path.
      */
-    CarAI(int moveSpeed, int gameSpeed, String imgPath)
+    CarAI(int moveSpeed, int gameSpeed, String imgPath, boolean gtaMode)
     {
         this.moveSpeed = moveSpeed;
         this.gameSpeed = gameSpeed;
@@ -39,6 +39,9 @@ public class CarAI extends Actor
         
         WIDTH = getImage().getWidth();
         HEIGHT = getImage().getHeight();
+        
+        RAND_UPPER = (gtaMode) ? 2 : 8;
+        randLimit = RAND_UPPER;
     }
     
     /**
@@ -84,7 +87,7 @@ public class CarAI extends Actor
     
     /**
      * This method returns if the car needs to be reseted or not.
-     * @return boolean      
+     * @return boolean      true or false
      */
     public boolean checkNeedsReset()
     {
@@ -124,10 +127,10 @@ public class CarAI extends Actor
         int xPlayer = player.getX();    // x location of player car
 
         
-        if (!checkedLaneSwitchForRun && Math.abs(xPlayer - xAI) <= 100 && Math.abs(xPlayer - xAI) > 10 && Math.abs(yPlayer - yAI) > 100 && yAI < yPlayer) {
+        if (!checkedLaneSwitchForRun && Math.abs(xPlayer - xAI) <= 100 && Math.abs(xPlayer - xAI) > 10 && Math.abs(yPlayer - yAI) < 300 && yAI < yPlayer) {
             checkedLaneSwitchForRun = true;
             int randCheck = RAND.nextInt(randLimit);
-            System.out.println(randCheck);
+
             if (randCheck != 0) { // Unless the randCheck value is 0, the AI car won't switch lanes.
                 if (randLimit > 1)
                         randLimit--;

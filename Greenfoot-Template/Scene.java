@@ -3,12 +3,13 @@ import java.util.*;
 import java.awt.Graphics;
 import java.awt.FontMetrics;
 import java.awt.Font;
+import java.io.*;
 
 /**
- * Write a description of class Scene here.
+ * This class handles all the gamestate and links all the objects to one another.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Selim Abdelwahab
+ * @version 2021-10-13
  */
 public class Scene extends World
 {
@@ -23,7 +24,10 @@ public class Scene extends World
     private CarSelect carSelectScene;
     
     private String carPath = ".\\images\\car_BlackOut.png";
-    private int selectedCar = 0;    
+    private int selectedCar = 0;   
+    
+    private final String DATA_FILE_PATH = ".\\data\\data.txt";
+    private int highscore;
     
     /**
      * Constructor for objects of class Scene.
@@ -33,7 +37,68 @@ public class Scene extends World
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(WIDTH, HEIGHT, 1, false);
         
+        ArrayList<String> lines = new ArrayList<String>();
+        
+        
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(DATA_FILE_PATH));
+            
+            String line;
+            
+            while((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+            
+            for (String l : lines) {
+                if (l.contains("highscore")) {
+                    String[] keyAndVal = l.split(":");
+                    String value = keyAndVal[1];
+                    
+                    value.trim();
+                    value.replace(" ", "");
+                    
+                    highscore = Integer.parseInt(value);
+                }
+            }
+        } catch (IndexOutOfBoundsException e) {     // File found but not the highscore
+            try {
+                FileWriter wr = new FileWriter(DATA_FILE_PATH);
+                wr.write("highscore:0");
+                wr.close();
+            } catch (IOException i) {
+                System.out.println("Error occured trying to add highscore");
+                i.printStackTrace();
+            }
+        } catch (IOException e) {                   // If the file isn't found, create a new one
+            File newFile = new File(".\\data\\data.txt");
+            
+            try {
+                if (newFile.createNewFile()) {
+                    FileWriter wr = new FileWriter(newFile);
+                    wr.write("highscore:0");
+                    wr.close();
+                } 
+            } catch (IOException i) {
+                System.out.println("An error has occured attempting to create a data file.");
+                e.printStackTrace();
+            }
+        }
         nextScene();
+    }
+    
+    public void updateDataFile(int score, int highscore) {
+        if (score > highscore) {
+            try {
+                FileWriter wr = new FileWriter(DATA_FILE_PATH);
+                wr.write("highscore:" + Integer.toString(score));
+                wr.close();
+            } catch (IOException e) {
+                System.out.println("An error has occured attempting to update highscore");
+                e.printStackTrace();
+            }
+            
+            this.highscore = score;
+        }
     }
     
     /**
@@ -50,13 +115,16 @@ public class Scene extends World
      */
     public void addText(String t, greenfoot.Font f, Color c, int x, int y, boolean bold, boolean center)
     {
+        // Get the background.
         GreenfootImage bg = getBackground();
         Graphics g = bg.getAwtImage().createGraphics();
         FontMetrics fm = g.getFontMetrics(new java.awt.Font(f.getName(), bold ? 1 : 0, f.getSize()));
         
+        // Get width of the text
         int w = fm.stringWidth(t);
         x = center ? x - w / 2 : x;
         
+        // Add the text to the screen with the provided properties (color, and font).
         bg.setColor(c);
         bg.setFont(f);
         bg.drawString(t, x, y);
@@ -64,8 +132,6 @@ public class Scene extends World
     
     /**
      * This method sets up instantiates the game scenes and calls the method to setup the corresponding scene.
-     * 
-     * @return     Nothing
      */
     private void nextScene()
     {
@@ -80,7 +146,7 @@ public class Scene extends World
                 gameScreen.setScene();
                 break;
             case 3:
-                endScreen = new End(this, gameScreen.getScore());
+                endScreen = new End(this, gameScreen.getScore(), highscore);
                 endScreen.setScene();
                 break;
             case 4:
@@ -92,21 +158,20 @@ public class Scene extends World
     
     /**
      * This method deletes all objects in the world and calls the next scene method.
-     * 
-     * @return     Nothing
      */
     private void resetScene() {
+        // Get a list of all the objects in the world
         List objects = getObjects(null);
+        // Remove all the objects in the world
         removeObjects(objects);
-        getBackground().fill();
         
+        // Initialize the next scene
         nextScene();
     }
     
     /**
-     * This method is called at each frame and calls the current scene's act method.
-     * 
-     * @return     Nothing
+     * Act - do whatever the Scene wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
      */
     public void act() {
         int nextState;
@@ -141,7 +206,7 @@ public class Scene extends World
                 }
                 break;
                 
-            case 4:
+            case 4: // Care select screen
                 carSelectScene.act();
                 nextState = carSelectScene.getNextState();
                 

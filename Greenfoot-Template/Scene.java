@@ -27,7 +27,8 @@ public class Scene extends World
     private int selectedCar = 0;   
     
     private final String DATA_FILE_PATH = ".\\data\\data.txt";
-    private int highscore;
+    public int highscore = 0;
+    public boolean gtaMode = false;
     
     /**
      * Constructor for objects of class Scene.
@@ -39,7 +40,7 @@ public class Scene extends World
         
         ArrayList<String> lines = new ArrayList<String>();
         
-        
+        // Read data
         try {
             BufferedReader reader = new BufferedReader(new FileReader(DATA_FILE_PATH));
             
@@ -49,6 +50,7 @@ public class Scene extends World
                 lines.add(line);
             }
             
+            // Get keys and value
             for (String l : lines) {
                 if (l.contains("highscore")) {
                     String[] keyAndVal = l.split(":");
@@ -58,6 +60,14 @@ public class Scene extends World
                     value.replace(" ", "");
                     
                     highscore = Integer.parseInt(value);
+                } else if (l.contains("gta_mode")) {
+                    String[] keyAndVal = l.split(":");
+                    String value = keyAndVal[1];
+                    
+                    value.trim();
+                    value.replace(" ", "");
+                    
+                    gtaMode = Boolean.parseBoolean(value);
                 }
             }
         } catch (IndexOutOfBoundsException e) {     // File found but not the highscore
@@ -86,11 +96,16 @@ public class Scene extends World
         nextScene();
     }
     
-    public void updateDataFile(int score, int highscore) {
+    /**
+     * This method takes in a score and a highscore and does some logic checks to see if the data file should store the new highscore.
+     * @param score         The score that the user was able to achieve in this run.
+     * @param highscore     The highest score the user has achieved
+     */
+    public void updateHighScore(int score, int highscore) {
         if (score > highscore) {
             try {
                 FileWriter wr = new FileWriter(DATA_FILE_PATH);
-                wr.write("highscore:" + Integer.toString(score));
+                wr.write("highscore:" + Integer.toString(score) + "\ngta_mode:"+gtaMode);
                 wr.close();
             } catch (IOException e) {
                 System.out.println("An error has occured attempting to update highscore");
@@ -99,6 +114,23 @@ public class Scene extends World
             
             this.highscore = score;
         }
+    }
+    
+    /**
+     * This method updates the gta mode data peice in the data file
+     * @param selected      Is the gta mode set to true or false
+     */
+    public void updateGtaMode(boolean selected) {
+            try {
+                FileWriter wr = new FileWriter(DATA_FILE_PATH);
+                wr.write("highscore:" + Integer.toString(highscore)+"\ngta_mode:" + selected);
+                wr.close();
+            } catch (IOException e) {
+                System.out.println("An error has occured attempting to update highscore");
+                e.printStackTrace();
+            }
+            
+            this.gtaMode = selected;
     }
     
     /**
@@ -142,7 +174,7 @@ public class Scene extends World
                 introScreen.setScene();
                 break;
             case 2:
-                gameScreen = new Game(this, carPath);
+                gameScreen = new Game(this, carPath, gtaMode);
                 gameScreen.setScene();
                 break;
             case 3:

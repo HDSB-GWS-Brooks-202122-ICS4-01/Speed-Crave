@@ -31,7 +31,7 @@ class Game
     private final ArrayList<CarAI> carsAI = new ArrayList<CarAI>();
     private final String[] CAR_PATHS = { "car_BlackOut", "car_BlueStrip", "car_GreenStrip", "car_PinkStrip", "car_RedStrip", "car_WhiteStrip",  "car01-n", "car02-n", "car03-n", "ambulance-n"};
     private final int CAR_PATHS_LENGTH = CAR_PATHS.length;
-    private final boolean GTA_MODE = false;
+    private final boolean GTA_MODE;
     
     private Gas gas;
     private OilPuddle oil;
@@ -46,18 +46,20 @@ class Game
      * @param scene     The world.
      * @param car       The path of the car (player's selected car).
      */
-    Game(Scene scene, String car)
+    Game(Scene scene, String car, boolean gtaMode)
     {   
         this.scene = scene;
         CAR = car;
         
         PLAYER_START_X = scene.WIDTH / 2;
         PLAYER_START_Y = scene.HEIGHT - 200;
+        
+        GTA_MODE = gtaMode;
     }
     
     /**
      * This method returns an integer value corresponding with a new game state.
-     * @return      Integer value for the next state. 0 indicates that the game state should not change.
+     * @return int      Integer value for the next state. 0 indicates that the game state should not change.
      */
     public int getNextState()
     {
@@ -156,6 +158,7 @@ class Game
         
         // Add the fuel bar
         scene.addObject(G_BAR, 5, scene.HEIGHT - 5);
+        G_BAR.setCurrentAsOgLoc();
         G_BAR.alignLeftX();
         G_BAR.alignBottomY();
         

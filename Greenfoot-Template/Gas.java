@@ -18,6 +18,10 @@ public class Gas extends Consumable
         super(IMAGE_PATH, 2, 3, true);
     }
     
+    /**
+     * Act - do whatever the Gas wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
     public void act()
     {
         super.act();

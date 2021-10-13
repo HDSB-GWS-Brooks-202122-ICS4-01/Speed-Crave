@@ -14,8 +14,8 @@ import java.awt.Rectangle;
  */
 public class Text extends Actor
 {
-    private Color color;
-    private final greenfoot.Font FONT;
+    private Color color;                    // Color of the text
+    private final greenfoot.Font FONT;      // Font properties
     
     /**
      * Constructor for the Text class.

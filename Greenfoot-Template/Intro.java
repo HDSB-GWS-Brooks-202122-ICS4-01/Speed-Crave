@@ -10,6 +10,7 @@ class Intro
     private final Scene SCENE;      // The world object
     private Btn startBtn;           // Start button => sets gamestate to game screen
     private Btn carSelectBtn;       // Car button => sets gamestate to car select screen
+    private GtaModeBtn gtaModeBtn;  // Button to set the game difficulty.
     private int nextState = 0;      // The next gamestate. 0 means remain in this state
     
     /**
@@ -49,13 +50,17 @@ class Intro
         // Nice little hidden message. Nothing but the truth...
         SCENE.addText("It gets fast. (Like really fast)", new greenfoot.Font("MONOSPACED", false, false, 20), Color.GRAY, 10, SCENE.HEIGHT - 10, false, false);
         
+        // Add gta mode button to the world
+        gtaModeBtn = new GtaModeBtn(SCENE.gtaMode);
+        SCENE.addObject(gtaModeBtn, SCENE.WIDTH / 2, SCENE.HEIGHT - 225);
+        
         // Add start button to the world
         startBtn = new StartBtn();
-        SCENE.addObject(startBtn, 150, SCENE.HEIGHT - 150);
+        SCENE.addObject(startBtn, 150, SCENE.HEIGHT - 100);
         
         // Add car select button to the world
         carSelectBtn = new CarSelectBtn();
-        SCENE.addObject(carSelectBtn, SCENE.WIDTH - 150, SCENE.HEIGHT - 150);
+        SCENE.addObject(carSelectBtn, SCENE.WIDTH - 150, SCENE.HEIGHT - 100);
     }
 
     /**
@@ -64,8 +69,10 @@ class Intro
      */
     public void act() {       
         // Start the game
-        if (startBtn.getClicked())
+        if (startBtn.getClicked()) {
             nextState = 2;
+            SCENE.updateGtaMode(gtaModeBtn.getSelected());
+        }
             
         // Go to car  select scene
         if (carSelectBtn.getClicked())

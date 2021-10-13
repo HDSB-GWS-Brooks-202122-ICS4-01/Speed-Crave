@@ -17,7 +17,7 @@ public class CarAI extends Actor
     private int expectedXPos = 0;                       // Where the AI car is supposed to be in the x postion
     private boolean checkedLaneSwitchForRun = false;    // Tracks if the AI car attempted to switch lanes in a run.
     private final int RAND_UPPER;                       // Max random value for lane switch.
-    private int randLimit;                 // The random limit (decrease with each run)
+    private int randLimit;                              // The random limit (decrease with each run)
     
     private final Random RAND = new Random();
     
@@ -40,7 +40,7 @@ public class CarAI extends Actor
         WIDTH = getImage().getWidth();
         HEIGHT = getImage().getHeight();
         
-        RAND_UPPER = (gtaMode) ? 2 : 8;
+        RAND_UPPER = (gtaMode) ? 1 : 6;
         randLimit = RAND_UPPER;
     }
     

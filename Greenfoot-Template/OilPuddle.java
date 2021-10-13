@@ -30,6 +30,10 @@ public class OilPuddle extends Consumable
         super.setRotation(RAND.nextInt(360));
     }
     
+    /**
+     * Act - do whatever the OilPuddle wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
     public void act()
     {
         // Call the parent act

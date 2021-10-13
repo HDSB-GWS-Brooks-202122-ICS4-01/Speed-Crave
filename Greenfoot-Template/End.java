@@ -59,7 +59,7 @@ class End
         public void setScene()
         {      
             // Set background color.
-            SCENE.getBackground().setColor(new Color(93, 173, 226));
+            SCENE.getBackground().setColor(new Color(210, 180, 222));
             SCENE.getBackground().fill();
             
             // Get post game message
@@ -87,7 +87,7 @@ class End
             homeBtn = new HomeBtn();
             SCENE.addObject(homeBtn, SCENE.WIDTH / 2, SCENE.HEIGHT - 100);
             
-            SCENE.updateDataFile(SCORE, HIGHSCORE);
+            SCENE.updateHighScore(SCORE, HIGHSCORE);
         }
         
         /**

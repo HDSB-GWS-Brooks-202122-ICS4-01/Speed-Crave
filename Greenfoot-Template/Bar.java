@@ -8,20 +8,91 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Bar extends Actor
 {
-    private final int WIDTH, HEIGHT;
-    private double perc = 1;
+    private final int WIDTH, HEIGHT;    // Original width and height of the bar (dims it's created with)
+    private int currentW, currentH;     // The current width and height of the bar
+    private double perc = 1;            // Percentage of the bar (0-1)
+    private boolean blink = false;      // Blink --> means that the bar is flashing
+    private long blinkTimer = 0;        // Time interval for blink
+    private int ogX, ogY;               // Original x, and y positions
     
     /**
      * Constructor for the Bar class
      * @param w     Int value for the width of the bar.
-     * @param h     Int value for the height of the bat,
+     * @param h     Int value for the height of the bar.
      */
     Bar(int w, int h)
     {
         WIDTH = w;
         HEIGHT = h;
         
-        drawShape();
+        currentW = w;
+        currentH = h;
+    }
+    
+    /**
+     * This method sets the current location as the original
+     */
+    public void setCurrentAsOgLoc() 
+    {
+        ogX = getX();
+        ogY = getY();
+    }
+    
+    /**
+     * This method sets the current location on the orignal positions.
+     */
+    public void setOgLocation()
+    {
+        setLocation(ogX, ogY);
+    }
+    
+    /**
+     * This method returns the original width of the bar.
+     * @return int      Original width of the bar.
+     */
+    public int getOgWidth()
+    {
+        return WIDTH;
+    }
+    
+    /**
+     * This method returns the original height of the bar.
+     * @return int      Original hieght of the bar.
+     */
+    public int getOgHeight()
+    {
+        return HEIGHT;
+    }
+    
+    /**
+     * This method returns the current width of the bar.
+     * @return int      Current width of the bar.
+     */
+    public int getWidth()
+    {
+        return currentW;
+    }
+    
+    /**
+     * This method returns the current height of the bar.
+     * @return int      Current height of the bar.
+     */
+    public int getHeight()
+    {
+        return currentH;
+    }
+    
+    /**
+     * This method resizes the bar's dimensions and takes an extra parameter to set it's blinking state.
+     * @param w             The new width
+     * @param h             The new height
+     * @param blink         The new blink state
+     */
+    public void resize(int w, int h, boolean blink)
+    {
+        currentW = w;
+        currentH = h;
+        this.blink = blink;
     }
     
     /**
@@ -43,26 +114,38 @@ public class Bar extends Actor
      */
     public void drawShape()
     {
-        GreenfootImage img = new GreenfootImage(WIDTH, HEIGHT);
+        GreenfootImage img = new GreenfootImage(currentW, currentH);
         
         img.setColor(new Color(153, 163, 164));
         img.fill();
         
         // The inner rectangle dimensions
-        int displayWidth = (int)(WIDTH / 1.1);
-        int displayHeight = (int)(HEIGHT / 1.5);
+        int displayWidth = (int)(currentW / 1.1);
+        int displayHeight = (int)(currentH / 1.5);
         
         // Starting position of the inner rectangle
-        int x = (WIDTH - displayWidth) / 2;
-        int y = (HEIGHT - displayHeight) / 2;
+        int x = (currentW - displayWidth) / 2;
+        int y = (currentH - displayHeight) / 2;
         
         // Background color of the inner bar
         img.setColor(Color.WHITE);
         img.fillRect(x, y, displayWidth, displayHeight);
         
-        // Inner rectangle of the inner rectange...? Basically the percentage
-        img.setColor(new Color(255, 85, 0));
-        img.fillRect(x, y, (int)(displayWidth * perc), displayHeight);
+        // Inner rectangle of the inner rectange...? Basically the percentage bar
+        boolean draw = true;
+        if (blink) {
+            if (System.currentTimeMillis() - blinkTimer < 1000)
+                draw = true;
+            else if (System.currentTimeMillis() - blinkTimer < 1000 + 500 * perc / 0.25)
+                draw = false;
+            else 
+                blinkTimer = System.currentTimeMillis();
+        }
+            
+        if (draw) {
+            img.setColor(new Color(255, 85, 0));
+            img.fillRect(x, y, (int)(displayWidth * perc), displayHeight);
+        }
         
         setImage(img);  
     }
@@ -72,7 +155,7 @@ public class Bar extends Actor
      */
     public void alignLeftX()
     {
-        setLocation(getX() + WIDTH / 2, getY());
+        setLocation(ogX + currentW / 2, getY());
     }
     
     /**
@@ -80,7 +163,7 @@ public class Bar extends Actor
      */
     public void alignBottomY()
     {
-        setLocation(getX(), getY() - HEIGHT / 2);
+        setLocation(getX(), ogY - currentH / 2);
     }
     
     /**

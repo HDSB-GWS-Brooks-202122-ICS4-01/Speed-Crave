@@ -17,6 +17,11 @@ public class Btn extends Actor
     private boolean isClicked = false;              // Tracks if the button is clicked
     private boolean isHovered = false;              // Tracks if the button is hovered
     
+    /**
+     * Constructor for the Btn class
+     * @param si        The file path to the still image
+     * @param hi        The file path to the hovered image
+     */
     public Btn(String si, String hi)
     {
         STILL_IMAGE = si;

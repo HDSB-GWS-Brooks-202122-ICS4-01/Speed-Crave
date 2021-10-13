@@ -1,1 +1,2 @@
-highscore:46
+highscore:49
+gta_mode:true

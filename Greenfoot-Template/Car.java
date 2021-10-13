@@ -12,23 +12,24 @@ public class Car extends Actor
     private final int WIDTH, HEIGHT;
     
     private int direction = 0;              // 1: move right, -1: move left, 0: move straight.
-    private int prevDirec = 0;
+    private int prevDirec = 0;              // Previous direction of travel
     
-    private final double SPEED = 8;
-    private final int TURN_SPEED = 4;
+    private final double SPEED = 8;         // Speed of the vehicle
+    private final int TURN_SPEED = 4;       // How fast the car turns
     
-    private boolean allowedToMove = true;
+    private boolean allowedToMove = true; 
     
     private final int MAX_GAS = 1000;
     private int gasoline = 1000;
     
-    private final Bar G_BAR;
+    private final Bar G_BAR;                // Visual display of the fuel remaining
     
-    private boolean slipperyMode = false;
-    private long timeInSlipperyMode = 0;
-    private int slipperyModeSeconds = 0;
+    private boolean slipperyMode = false;   // Has the car hit oil puddle
+    private long timeInSlipperyMode = 0;    // Time in slippery mode
+    private int slipperyModeSeconds = 0;    // Time in seconds represented as integer
     
-    private int gameSpeed = 1;
+    private int gameSpeed = 1;              // How fast the game is going
+    
     private final Random RAND = new Random();
     
     /**
@@ -166,7 +167,11 @@ public class Car extends Actor
         }
     }
     
-    public void setGameSpeed(int gamespeed)
+    /**
+     * This method checks if the car is hitting the edge.
+     * @param gameSpeed     The new gameSpeed.
+     */
+    public void setGameSpeed(int gameSpeed)
     {
         this.gameSpeed = gameSpeed;
     }
@@ -178,30 +183,40 @@ public class Car extends Actor
     public void act()
     {
         if (allowedToMove) {
-            if (!slipperyMode) {
-                gasoline -= gameSpeed;
-                G_BAR.setPerc(getFuelPerc());
-                
+            gasoline--;
+            G_BAR.setPerc(getFuelPerc());
+            
+            if (getFuelPerc() <= 0.40 && G_BAR.getWidth() == G_BAR.getOgWidth()) { // Low on fuel make sure user knows
+                G_BAR.resize(300, 60, true);
+                G_BAR.setOgLocation();
+                G_BAR.alignLeftX();
+                G_BAR.alignBottomY();
+            } else if (getFuelPerc() > 0.40 && G_BAR.getWidth() != G_BAR.getOgWidth()) { // Good on fuel, no need to disturb the user with a large bar
+                G_BAR.resize(G_BAR.getOgWidth(), G_BAR.getOgHeight(), false);
+                G_BAR.setOgLocation();
+                G_BAR.alignLeftX();
+                G_BAR.alignBottomY();
+            }
+            
+            if (!slipperyMode) {            // Has not hit oil puddle
                 int currentRotation = getRotation();
                 
                 setDirection();
                 
-                if (direction != 0) {                    
+                if (direction != 0) {       // Moving left or right          
                     int x = getX(), y = getY();
                     
                     if (!checkHitEdge())
                         setLocation((int)(x + SPEED * direction * getTurnPerc((double)currentRotation)), y);
-                    else {
+                    else                    // Hit edge make sure to push car back
                         setLocation((int)(x - SPEED * direction * getTurnPerc((double)currentRotation)), y);
-                    }
                 }
                  
                 switch (direction)
                 {
                     
                     case 0:
-                        if (currentRotation != 0)
-                        {
+                        if (currentRotation != 0) {
                             if (currentRotation <= (30 + 30 % TURN_SPEED))
                                 setRotation(currentRotation - TURN_SPEED);
                             else
@@ -238,8 +253,10 @@ public class Car extends Actor
                 setLocation(getX() + (int)(2 * direction), getY());
                 setRotation(getRotation() + direction * 30);
                 
-                if (slipperyModeSeconds >= 3)
+                if (slipperyModeSeconds >= 2) {
                     setSlipperyMode(false);
+                    setRotation(0);
+                }
             }
         }
     }

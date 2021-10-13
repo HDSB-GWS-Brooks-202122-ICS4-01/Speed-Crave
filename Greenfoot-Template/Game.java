@@ -2,15 +2,20 @@ import greenfoot.*;
 import java.util.*;
 import java.io.*;
 
+/**
+ * The main logic for the game is all handled here.
+ * 
+ * Selim Abdelwahab
+ * 2021-10-13
+ */
 class Game
 {
-    private final Scene scene;
+    private final Scene SCENE;
     private int nextState = 0; 
     
-    private int intervalSinceCarHasBeenAdded = 0;
-    private int intervalToAddCar = 1;
+    private int intervalSinceCarHasBeenAdded = 0;                   // How many intervals to add car
     
-    private Text gameScore;
+    private Text gameScore;                                         // Displays the user's score
     
     private int gameSpeed = 5;
     private long interval = System.currentTimeMillis();
@@ -18,20 +23,19 @@ class Game
     private long scoreInterval = interval;
     
     private Random rand = new Random();
-    private int[] spawnLocations = {150, 250, 350, 450, 550};
+    private int[] spawnLocations = {150, 250, 350, 450, 550};       // Spawn x locations for all other objects
     
-    private final int PLAYER_START_X, PLAYER_START_Y;
+    private Background[] backgrounds = new Background[2];           // Backgrounds that switch around.
     
-    private Background[] backgrounds = new Background[2];
-    
-    private Car player;
-    private final String CAR;
-    private final Bar G_BAR = new Bar(150, 30);
+    private final int PLAYER_START_X, PLAYER_START_Y;               // Starting location of the player.
+    private Car player;                                             // Player car object
+    private final String CAR;                                       // File path for the car that the player selected.
+    private final Bar G_BAR = new Bar(150, 30);                     // The bar for displayin the players fuel
     
     private final ArrayList<CarAI> carsAI = new ArrayList<CarAI>();
     private final String[] CAR_PATHS = { "car_BlackOut", "car_BlueStrip", "car_GreenStrip", "car_PinkStrip", "car_RedStrip", "car_WhiteStrip",  "car01-n", "car02-n", "car03-n", "ambulance-n"};
     private final int CAR_PATHS_LENGTH = CAR_PATHS.length;
-    private final boolean GTA_MODE;
+    private final boolean GTA_MODE;                                 // How difficult the game is
     
     private Gas gas;
     private OilPuddle oil;
@@ -43,16 +47,16 @@ class Game
     
     /**
      * Constructor for the game class.
-     * @param scene     The world.
+     * @param SCENE     The world.
      * @param car       The path of the car (player's selected car).
      */
-    Game(Scene scene, String car, boolean gtaMode)
+    Game(Scene SCENE, String car, boolean gtaMode)
     {   
-        this.scene = scene;
+        this.SCENE = SCENE;
         CAR = car;
         
-        PLAYER_START_X = scene.WIDTH / 2;
-        PLAYER_START_Y = scene.HEIGHT - 200;
+        PLAYER_START_X = SCENE.WIDTH / 2;
+        PLAYER_START_Y = SCENE.HEIGHT - 200;
         
         GTA_MODE = gtaMode;
     }
@@ -116,20 +120,20 @@ class Game
         car = new CarAI(speed, gameSpeed, ".\\images\\" + CAR_PATHS[carType] + ".png", GTA_MODE);
         
         // Add car to world and array.
-        scene.addObject(car, xPos, yPos);
+        SCENE.addObject(car, xPos, yPos);
         car.setPos(xPos, yPos);
         carsAI.add(car);
     }
     
     /**
-     * This method sets the game screen scene.
+     * This method sets the game screen SCENE.
      */
     public void setScene() {
         // Add backgrounds to world
         for (int i = 1; i <= 2; i++)
         {
-            Background bg = new Background(gameSpeed, i, scene.HEIGHT);
-            scene.addObject(bg, scene.WIDTH / 2, 0);
+            Background bg = new Background(gameSpeed, i, SCENE.HEIGHT);
+            SCENE.addObject(bg, SCENE.WIDTH / 2, 0);
             bg.setStartPos();
                 
             backgrounds[i - 1] = bg;
@@ -137,14 +141,14 @@ class Game
         
         // Add the gasoline to the world
         gas = new Gas();
-        scene.addObject(gas, getSpawnX(), -200);
+        SCENE.addObject(gas, getSpawnX(), -200);
         
         oil = new OilPuddle();
-        scene.addObject(oil, getSpawnX(), -300);
+        SCENE.addObject(oil, getSpawnX(), -300);
         
         // Add the player to the world
         player = new Car(this.CAR, G_BAR);
-        scene.addObject(player, PLAYER_START_X, PLAYER_START_Y);
+        SCENE.addObject(player, PLAYER_START_X, PLAYER_START_Y);
         
         // Add 3 cars in the world
         for (int i = 0; i < 3; i++)
@@ -154,16 +158,16 @@ class Game
         
         // Add the score text
         gameScore = new Text(Color.WHITE, new greenfoot.Font("MONOSPACED", true, false, 40));
-        scene.addObject(gameScore, scene.WIDTH / 2, 30);    
+        SCENE.addObject(gameScore, SCENE.WIDTH / 2, 30);    
         
         // Add the fuel bar
-        scene.addObject(G_BAR, 5, scene.HEIGHT - 5);
+        SCENE.addObject(G_BAR, 5, SCENE.HEIGHT - 5);
         G_BAR.setCurrentAsOgLoc();
         G_BAR.alignLeftX();
         G_BAR.alignBottomY();
         
         // Set the draw order of the objects
-        scene.setPaintOrder(Text.class, Bar.class, Car.class, CarAI.class, Gas.class, OilPuddle.class, Background.class);
+        SCENE.setPaintOrder(Text.class, Bar.class, Car.class, CarAI.class, Gas.class, OilPuddle.class, Background.class);
     }
     
     /**
@@ -194,7 +198,7 @@ class Game
         timeSinceGameover = currentTime;
         
         gameScore.setColor(Color.RED);
-        gameScore.setPos(scene.WIDTH / 2, scene.HEIGHT / 2);
+        gameScore.setPos(SCENE.WIDTH / 2, SCENE.HEIGHT / 2);
         if (crashed)
             gameScore.setText("You Crashed!");
         else

@@ -1,10 +1,10 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class BtnStart here.
+ * Parent class to all sub button class and handles all the main methods needed.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Selim Abdelwahab
+ * 2021-10-13
  */
 public class Btn extends Actor
 {   

@@ -5,6 +5,12 @@ import java.awt.Font;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * Displays instruction and several buttons.
+ * 
+ * Selim Abdelwahab
+ * 2021-10-13
+ */
 class Intro
 {
     private final Scene SCENE;      // The world object

@@ -1,10 +1,10 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class Consumable here.
+ * Objects that are present in the game and are either meant to be avoided or collected.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Selim Abdelwahab
+ * 2021-10-13
  */
 public class Consumable extends Actor
 {

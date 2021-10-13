@@ -73,7 +73,7 @@ public class Scene extends World
         } catch (IndexOutOfBoundsException e) {     // File found but not the highscore
             try {
                 FileWriter wr = new FileWriter(DATA_FILE_PATH);
-                wr.write("highscore:0");
+                wr.write("highscore:0\ngta_mode:false");
                 wr.close();
             } catch (IOException i) {
                 System.out.println("Error occured trying to add highscore");
@@ -85,7 +85,7 @@ public class Scene extends World
             try {
                 if (newFile.createNewFile()) {
                     FileWriter wr = new FileWriter(newFile);
-                    wr.write("highscore:0");
+                    wr.write("highscore:0\ngta_mode:false");
                     wr.close();
                 } 
             } catch (IOException i) {

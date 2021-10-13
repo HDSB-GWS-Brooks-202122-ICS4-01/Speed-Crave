@@ -1,10 +1,10 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class GtaModeBtn here.
+ * Button with a toggle on and off for a certain game mode
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Selim Abdelwahab
+ * 2021-10-13
  */
 public class GtaModeBtn extends Btn
 {

@@ -1,7 +1,12 @@
 import greenfoot.*;
 import java.util.Random;
 
-
+/**
+ * The end screen of the game. Displays score and highscore, exit and home buttons.
+ * 
+ * Selim Abdelwahab
+ * 2021-10-13
+ */
 class End
 {
         private final Scene SCENE;
@@ -9,6 +14,7 @@ class End
         private int nextState = 0;
         
         private Btn homeBtn;
+        private Btn exitBtn;
         private final int SCORE;
         private final int HIGHSCORE;
         
@@ -85,7 +91,11 @@ class End
             
             // Add home button
             homeBtn = new HomeBtn();
-            SCENE.addObject(homeBtn, SCENE.WIDTH / 2, SCENE.HEIGHT - 100);
+            SCENE.addObject(homeBtn, 150, SCENE.HEIGHT - 100);
+            
+            // Add exit button
+            exitBtn = new ExitBtn();
+            SCENE.addObject(exitBtn, SCENE.WIDTH - 150, SCENE.HEIGHT - 100);
             
             SCENE.updateHighScore(SCORE, HIGHSCORE);
         }
@@ -98,5 +108,8 @@ class End
         {
             if (homeBtn.getClicked())
                 nextState = 1;
+                
+            if (exitBtn.getClicked())
+                System.exit(0);
         }
 }

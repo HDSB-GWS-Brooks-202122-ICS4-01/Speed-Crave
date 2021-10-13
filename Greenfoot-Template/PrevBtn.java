@@ -1,10 +1,10 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class PrevBtn here.
+ * Button with the shape of an arrow facing left
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Selim Abdelwahab
+ * 2021-10-13
  */
 public class PrevBtn extends Btn
 {

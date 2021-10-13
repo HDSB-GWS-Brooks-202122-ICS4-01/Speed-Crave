@@ -1,10 +1,10 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class NextBtn here.
+ * Button with the shape of an arrow with the tip to the right.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Selim Abdelwahab
+ * 2021-10-13
  */
 public class NextBtn extends Btn
 {

@@ -7,10 +7,10 @@ import java.awt.font.*;
 import java.awt.Rectangle;
 
 /**
- * Write a description of class Text here.
+ * Draws text to the screen.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Selim Abdelwahab
+ * 2021-10-13
  */
 public class Text extends Actor
 {

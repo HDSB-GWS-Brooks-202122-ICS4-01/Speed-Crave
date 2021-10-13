@@ -1,10 +1,11 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.Random;
+
 /**
- * Write a description of class OilPuddle here.
+ * When in contact with the player car it will result in the car to spin out.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Selim Abdelwahab
+ * 2021-10-13
  */
 public class OilPuddle extends Consumable
 {

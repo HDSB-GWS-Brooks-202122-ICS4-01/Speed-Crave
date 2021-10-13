@@ -3,10 +3,10 @@ import java.util.*;
 
 
 /**
- * Write a description of class CarAI here.
+ * This class is made with the intent of sabotaging the player and making them lose.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Selim Abdelwahab
+ * 2021-10-13
  */
 public class CarAI extends Actor
 {

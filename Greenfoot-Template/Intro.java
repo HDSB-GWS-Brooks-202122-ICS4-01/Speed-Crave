@@ -36,7 +36,9 @@ class Intro
     {
         return nextState;
     }
-    
+    /**
+     * This method sets the game screen SCENE.
+     */
     public void setScene() {
         // Change background color.
         SCENE.getBackground().setColor(new Color(50, 50, 50));
